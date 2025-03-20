@@ -1,0 +1,106 @@
+<head>
+   <!-- for optimal display on high DPI devices -->
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.css" />
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin/index.css" />
+   <link rel="stylesheet" href="styles.css" />
+</head>
+
+<!-- the viewer container must have a defined size -->
+<div id="viewer" style="width: 100vw; height: 100vh;"></div>
+
+<script type="importmap">
+   {
+       "imports": {
+           "three": "https://cdn.jsdelivr.net/npm/three/build/three.module.js",
+           "@photo-sphere-viewer/core": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.module.js",
+           "@photo-sphere-viewer/markers-plugin": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin/index.module.js"
+       }
+   }
+</script>
+
+<script type="module">
+   import { Viewer } from '@photo-sphere-viewer/core';
+   import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+
+   const iconsUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+   const baseUrl = 'img/';
+
+   new Viewer({
+      container: 'viewer',
+      panorama: baseUrl + 'turin_mole_360.jpeg',
+      caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+      loadingImg: baseUrl + 'loader.gif',
+      touchmoveTwoFingers: true,
+      mousewheelCtrlKey: false,
+
+      plugins: [
+        [MarkersPlugin, {
+            markers: [{
+                id: 'custom-tooltip',
+                tooltip: {
+                    content: document.querySelector('#tooltip-content').innerText,
+                    className: 'custom-tooltip',
+                    position: 'top',
+                    trigger: 'click',
+                },
+                position: { pitch: -0.04, yaw: -2.03 },
+                image: iconsUrl + 'pictos/pin-blue.png',
+                size: { width: 32, height: 32 },
+                anchor: 'bottom center',
+            }],
+        }],
+    ],
+   });
+</script>
+
+<!-- Video Modal Structure -->
+<div id="videoModal" class="modal">
+   <div class="modal-content">
+     <span class="close" onclick="closeModal()">&times;</span>
+     <!-- width="1280" height="720" -->
+     <iframe id="videoIframe" width="1280" height="720" src="" frameborder="0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+   </div>
+ </div>
+
+ <script>
+   function openModal(src) {
+     const modal = document.getElementById('videoModal');
+     const iframe = document.getElementById('videoIframe');
+     iframe.src = `${src}?autoplay=1`; // Replace YOUR_VIDEO_ID with the actual video ID
+     modal.style.display = 'block';
+   }
+ 
+   function closeModal() {
+     const modal = document.getElementById('videoModal');
+     const iframe = document.getElementById('videoIframe');
+     iframe.src = ''; // Stop the video
+     modal.style.display = 'none';
+   }
+ 
+   // Close the modal when clicking outside of it
+   window.onclick = function(event) {
+     const modal = document.getElementById('videoModal');
+     if (event.target === modal) {
+       closeModal();
+     }
+   }
+ </script>
+
+<!-- Gran Madre -->
+<script type="text/template" id="tooltip-content">
+   <div class="image-container">
+      <img class="background-image" src="https://www.joyphotographers.com/wp-content/uploads/2017/02/serena-andrea-davide-3074-Copia1-1880x1240.jpg" alt="Background">
+      <img 
+         class="play-btn" src="https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_play_circle_filled_white_48px-512.png" 
+         alt="Play" onclick="openModal(`https://www.youtube.com/embed/Cr3cmPq4fYk`)"
+      >
+    </div>
+   <article>
+     <h2>Il grande giorno</h2>
+     <p>
+       Ricordi quando la sposa era pronta per il suo grande momento e più a sinistra si poteva scorgere il grande momento? Eh sì, calzava proprio a pennello.
+     </p>
+   </article>
+</script>

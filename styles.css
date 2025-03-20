@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+.custom-tooltip {
+ max-width: none;
+ width: 300px;
+ box-shadow: 0 0 0 3px white;
+}
+
+.custom-tooltip .psv-tooltip-content {
+   padding: 0;
+}
+
+.custom-tooltip img {
+   width: 100%;
+   border-radius: 4px 4px 0 0;
+}
+
+.custom-tooltip h2,
+.custom-tooltip p {
+   margin: 1rem;
+   text-align: justify;
+}
+
+.image-container {
+    position: relative; /* Establish a positioning context for absolute children */
+    display: inline-block; /* Ensure the container fits the content */
+  }
+  
+  .background-image {
+    display: block; /* Ensure the image takes up the full width of the container */
+  }
+  
+  .play-btn {
+    position: absolute; /* Position the play button absolutely within the container */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%)  scale(0.3); /* Adjust for the button's own dimensions */
+    z-index: 1; /* Ensure the play button is above the background image */
+    cursor: pointer; /* Change cursor to pointer to indicate interactivity */
+  }
+
+  /* Modals */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.8); /* Black with opacity */
+  }
+  
+  .modal-content {
+    position: relative;
+    margin: auto;
+    padding: 0;
+    width: 80%;
+    max-width: 1280px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .close {
+    position: absolute;
+    top: -10px;
+    right: -30;
+    color: #fff;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+  }
