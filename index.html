@@ -8,14 +8,16 @@
 </head>
 
 <!-- the viewer container must have a defined size -->
-<div id="viewer" style="width: 100vw; height: 100vh;"></div>
+<div id="viewer" style="width: 100vw; height: 100vh;">
+</div>
 
 <script type="importmap">
    {
        "imports": {
            "three": "https://cdn.jsdelivr.net/npm/three/build/three.module.js",
            "@photo-sphere-viewer/core": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.module.js",
-           "@photo-sphere-viewer/markers-plugin": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin/index.module.js"
+           "@photo-sphere-viewer/markers-plugin": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin/index.module.js",
+           "@photo-sphere-viewer/cubemap-adapter": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/cubemap-adapter/index.module.js"
        }
    }
 </script>
@@ -23,15 +25,26 @@
 <script type="module">
    import { Viewer } from '@photo-sphere-viewer/core';
    import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+   import {  CubemapAdapter } from '@photo-sphere-viewer/cubemap-adapter';
 
    const iconsUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
    const baseUrl = 'img/';
+   const turinUrl = baseUrl + 'turin/';
+   const moleUrl = turinUrl + 'mole';
 
    new Viewer({
       container: 'viewer',
-      panorama: baseUrl + 'turin_mole_360.jpeg',
+      adapter: CubemapAdapter,
+      panorama: [
+        `${moleUrl}/left.png`,
+        `${moleUrl}/front.png`,
+        `${moleUrl}/right.png`,
+        `${moleUrl}/back.png`,
+        `${moleUrl}/up.png`,
+        `${moleUrl}/down.png`,
+      ],
       caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-      loadingImg: baseUrl + 'loader.gif',
+      loadingImg: baseUrl + 'turin_mole_360.png',
       touchmoveTwoFingers: true,
       mousewheelCtrlKey: false,
 
