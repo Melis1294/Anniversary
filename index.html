@@ -33,11 +33,72 @@
   import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
   import { CubemapAdapter } from '@photo-sphere-viewer/cubemap-adapter';
 
+  const changePlaceBtn = document.getElementById("changePlace");
+
   const iconsUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
   const baseUrl = 'img/';
   const turinUrl = baseUrl + 'turin/';
 
-  export const viewer = new Viewer({
+  const markersData = 
+  [
+    {
+      id: 'santa_giulia',
+      visible: true,
+      image: iconsUrl + 'pictos/pin-red.png',
+      position: { pitch: -0.09, yaw: -3.20 },
+      contentData: {
+        imageSrc: "https://www.museotorino.it/images/0a/83/b3/86/0a83b386ab504b19bdd74b083d7eab39-3.jpg",
+        isVideo: false,
+        videoSrc: "",
+        title: "Santa Giulia",
+        description: "Quella sera speciale quando il caldo di maggio circondava i nostri corpi e noi non sapevamo ancora che ci avrebbe riuniti, tra le moli di vetro, il canto dei giovani riuniti e i bicchieri della Santa ti confessai la mia cotta da ragazzino. Ero così emozionato nel dirtelo che mi sembrava che fosse rimasta lì, latente, e mai svanita.",
+      }
+    },
+    {
+      id: 'gran_madre',
+      visible: false,
+      image: iconsUrl + 'pictos/pin-blue.png',
+      position: { pitch: -0.04, yaw: -2.03 },
+      contentData: {
+        imageSrc: "https://www.joyphotographers.com/wp-content/uploads/2017/02/serena-andrea-davide-3074-Copia1-1880x1240.jpg",
+        isVideo: true,
+        videoSrc: "https://www.youtube.com/embed/Cr3cmPq4fYk",
+        title: "Il grande giorno",
+        description: "Ricordi quando la sposa era pronta per il suo grande momento e più a sinistra si poteva scorgere il grande momento? Eh sì, calzava proprio a pennello.",
+      }
+    },
+    {
+      id: 'go piacenza',
+      visible: false,
+      image: 'https://cdn-icons-png.flaticon.com/128/744/744537.png',
+      position: { pitch: -0.015, yaw: -0.45 },
+      contentData: {
+        imageSrc: "",
+        isVideo: false,
+        videoSrc: "",
+        title: "",
+        description: "",
+      }
+    }
+  ];
+
+  // Then build the markers
+  const markers = markersData.map(marker => ({
+    id: marker.id,
+    visible: marker.visible,
+    position: marker.position,
+    image: marker.image,
+    size: { width: 32, height: 32 },
+    anchor: 'bottom center',
+    tooltip: {
+      content: createTooltipContent(marker.contentData),
+      className: 'custom-tooltip',
+      position: 'top',
+      trigger: 'click',
+    }
+  }));
+
+  const viewer = new Viewer({
     container: 'viewer',
     adapter: CubemapAdapter,
     panorama: {
@@ -47,6 +108,7 @@
       flipTopBottom: false,
       // optional, change order of the faces on the stripe
       order: ['left', 'front', 'right', 'back', 'top', 'bottom'],
+      zoom: 500,
     },
     // caption: 'Anniversario di<b> Kri e Kla <3</b>',
     navbar: null,
@@ -55,73 +117,15 @@
     mousewheelCtrlKey: false,
 
     plugins: [
-      [MarkersPlugin, {
-        markers: [{
-          id: 'go piacenza',
-          visible: false,
-          tooltip: {
-            content: '',
-            className: 'custom-tooltip',
-            position: 'top',
-            trigger: 'click',
-          },
-          position: { pitch: -0.015, yaw: -0.45 },
-          image: 'https://cdn-icons-png.flaticon.com/128/744/744537.png',
-          size: { width: 32, height: 32 },
-          anchor: 'bottom center',
-        }, {
-          id: 'gran_madre',
-          visible: false,
-          tooltip: {
-            content: document.querySelector('#gran_madre').innerText,
-            className: 'custom-tooltip',
-            position: 'top',
-            trigger: 'click',
-          },
-          position: { pitch: -0.04, yaw: -2.03 },
-          image: iconsUrl + 'pictos/pin-blue.png',
-          size: { width: 32, height: 32 },
-          anchor: 'bottom center',
-        },
-        {
-          id: 'santa_giulia',
-          visible: true,
-          tooltip: {
-            content: document.querySelector('#santa_giulia').innerText,
-            className: 'custom-tooltip',
-            position: 'top',
-            trigger: 'click',
-          },
-          position: { pitch: -0.09, yaw: -3.20 },
-          image: iconsUrl + 'pictos/pin-red.png',
-          size: { width: 32, height: 32 },
-          anchor: 'bottom center',
-        }],
-      }],
+      [MarkersPlugin, { markers }],
     ],
   });
 
-
-  const changePlaceBtn = document.getElementById("changePlace");
-
-  const tooltipHtml = document.getElementById('santa_giulia').innerHTML;
-
-  const tempContainer = document.createElement('div');
-  tempContainer.innerHTML = tooltipHtml;
-
-  const nextBtn = tempContainer.querySelector('#next');
-
-    
-  window.markersPlugin  = viewer.getPlugin(MarkersPlugin);
-  window.markersIndex = 0;
-
-  nextBtn.addEventListener("click", () => next);
-
-  console.log(markersPlugin.markers);
-
+  window.markersPlugin = viewer.getPlugin(MarkersPlugin);
+  window.markersIndex = 1;
 
   markersPlugin.addEventListener('select-marker', ({ marker, visible }) => {
-    if (marker.id.includes('go')) { 
+    if (marker.id.includes('go')) {
       markersPlugin.hideMarker(marker.id);
       changePlace();
     }
@@ -132,6 +136,13 @@
 
   function start() {
     viewer.toggleFullscreen();
+
+    viewer.animate({
+      yaw: Math.PI,
+      pitch: '0deg',
+      zoom: 0,
+      speed: '9rpm',
+    }).then(() => console.log("animation complete!!!"));
   }
 
   export function changePlace() {
@@ -148,22 +159,72 @@
         rotation: false,
         effect: 'black',
       },
-      zoom: 70,
+      zoom: 0,
     });
   }
+
+  function createTooltipContent({ imageSrc, isVideo, videoSrc, title, description }) {
+    if (imageSrc === '') return '';
+
+    const template = document.querySelector('#tooltip-template');
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = template.innerHTML;
+
+    const backgroundImage = wrapper.querySelector('.background-image');
+    const playBtn = wrapper.querySelector('.play-btn');
+    const h2 = wrapper.querySelector('h2');
+    const p = wrapper.querySelector('p');
+
+    backgroundImage.src = imageSrc;
+    h2.textContent = title;
+    p.textContent = description;
+
+    if (isVideo) {
+      playBtn.src = "https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_play_circle_filled_white_48px-512.png";
+      playBtn.style.cursor = "pointer";
+      playBtn.addEventListener("click", () => openModal(videoSrc));
+    } else {
+      playBtn.style.display = 'none';
+    }
+
+    return wrapper.innerHTML;
+  }
+</script>
+
+<!-- Tooltip Structure -->
+<script type="text/template" id="tooltip-template">
+  <div class="image-container">
+     <img class="background-image" src="" alt="Background">
+     <img class="play-btn" src="" alt="Play">
+   </div>
+  <article>
+    <h2></h2>
+    <p></p>
+  </article>
+  <button id="next" onclick="next()">Prossimo ricordo</button>
 </script>
 
 <!-- Video Modal Structure -->
 <div id="videoModal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
-    <!-- width="1280" height="720" -->
     <iframe id="videoIframe" width="1280" height="720" src="" frameborder="0" allow="autoplay; encrypted-media"
       referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
   </div>
 </div>
 
 <script>
+
+  function next() {
+    const marker = window.markersPlugin.getCurrentMarker();
+    const markers = window.markersPlugin.getMarkers();
+    console.log(markers[window.markersIndex].config.id);
+    window.markersPlugin.hideMarker(marker.id);
+    window.markersPlugin.showMarker(markers[window.markersIndex].config.id);
+    window.markersIndex++;
+    console.log(window.markersIndex);
+  }
+
   function openModal(src) {
     const modal = document.getElementById('videoModal');
     const iframe = document.getElementById('videoIframe');
@@ -186,52 +247,7 @@
     }
   }
 
-  function next() {
-    const marker = window.markersPlugin.getCurrentMarker();
-    const markers = window.markersPlugin.getMarkers();
-    console.log(markers[window.markersIndex].config.id);
-    window.markersPlugin.hideMarker(marker.id);
-    window.markersIndex = 1;
-    window.markersPlugin.showMarker(markers[window.markersIndex].config.id);
-    window.markersIndex++;
-    console.log(window.markersIndex);
+  function loadTooltipData() {
+
   }
-</script>
-
-<!-- Gran Madre -->
-<script type="text/template" id="gran_madre">
-   <div class="image-container">
-      <img class="background-image" src="https://www.joyphotographers.com/wp-content/uploads/2017/02/serena-andrea-davide-3074-Copia1-1880x1240.jpg" alt="Background">
-      <img
-         class="play-btn" src="https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_play_circle_filled_white_48px-512.png" 
-         alt="Play" onclick="openModal(`https://www.youtube.com/embed/Cr3cmPq4fYk`)"
-      >
-    </div>
-   <article>
-     <h2>Il grande giorno</h2>
-     <p>
-       Ricordi quando la sposa era pronta per il suo grande momento e più a sinistra si poteva scorgere il grande momento? Eh sì, calzava proprio a pennello.
-     </p>
-   </article>
-</script>
-
-<script type="text/template" id="santa_giulia">
-  <div class="image-container">
-     <img class="background-image" src="https://www.museotorino.it/images/0a/83/b3/86/0a83b386ab504b19bdd74b083d7eab39-3.jpg" alt="Background">
-     <img 
-        class="play-btn" src="https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_play_circle_filled_white_48px-512.png" 
-        alt="Play" onclick="openModal(`https://www.youtube.com/embed/Cr3cmPq4fYk`)"
-     >
-   </div>
-  <article>
-    <h2>Quella sera speciale</h2>
-    <p>
-      Quella sera speciale quando il caldo di maggio circondava i nostri corpi e noi non sapevamo ancora che ci avrebbe riuniti, tra le moli di vetro, il canto 
-      dei giovani riuniti e i bicchieri della Santa ti confessai la mia cotta da ragazzino. Ero così emozionato nel dirtelo che mi sembrava che fosse rimasta lì, latente,
-      e mai svanita.
-    </p>
-  </article>
-  <button id="next" onclick="next()">
-    Continua
-  </button>
 </script>
