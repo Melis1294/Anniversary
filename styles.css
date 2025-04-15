@@ -81,3 +81,19 @@ body {
     text-decoration: none;
     cursor: pointer;
   }
+
+  .square {
+    height: 90px;
+    width: 90px;
+    background-color: #ff1515;
+    z-index: 100;
+    right: 50px;
+    position: absolute;
+    cursor: pointer;
+
+    h4 {
+      color: white;
+      align-content: flex-end;
+      justify-self: center;
+    }
+  }

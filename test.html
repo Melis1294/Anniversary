@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js"
+        integrity="sha512-UcDEnmFoMh0dYHu0wGsf5SKB7z7i5j3GuXHCnb3i4s44hfctoLihr896bxM0zL7jGkcHQXXrJsFIL62ehtd6yQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+        </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+    <style>
+        /* .cube-container {
+            display: flex;
+            flex-wrap: nowrap;
+            max-width: 3072px;
+            overflow: scroll;
+        } */
+
+        .cube-container {
+            display: flex;
+            flex-wrap: nowrap;
+            transform: rotate(90deg) translateY(-100%);
+            transform-origin: top left;
+            height: auto;
+            width: auto;
+        }
+
+        .cube-wrapper {
+            width: 1000px; /* flipped since we're rotating */
+            height: 6000px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cube-face {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        img {
+            display: block;
+        }
+
+        .flip-diagonal img {
+            transform: rotateX(-180deg) rotateY(-180deg);
+        }
+
+        .rotated-box {
+            transform: rotate(90deg);
+            transform-origin: left top;
+            display: inline-block;
+            background: lightblue;
+            padding: 10px;
+            /* Adjust width/height if needed */
+        }
+
+        #exportImage {
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<!-- CITIES urls -->
+<!-- TORINO: SIZE- 238 x 512 | width: 750px; height: 4500px;-->
+<!-- https://cloudflare1.360gigapixels.com/pano/roberto-scavino/00037177_Labo_X42_Cities.jpg -->
+<!-- PIACENZA SIZE- 270 x 512 | width: 782px; height: 4692px;-->
+<!-- https://cloudflare1.360gigapixels.com/pano/mariobolzoni360/02018601_PANO-AIR3-0863-PC-PO-50K-stitch-jpg -->
+ <!-- GENOVA -->
+  <!-- PRINCIPE SIZE- 488 x 512 | width: 1000px; height: 6000px;-->
+   <!-- https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg -->
+
+<body>
+    <button id="exportImage">Download as Image</button>
+    <!-- <div class="rotated-box">
+        This is a rotated div.
+      </div> -->
+      <div class="cube-wrapper" id="cube-view">
+          <div class="cube-container" >
+              <div class="cube-face">
+                  <img width="512" height="512"
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/left/tile/512/1/0/0.jpg?orig=" />
+                  <img width="488" height="512"
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/left/tile/512/1/0/1.jpg?orig=" />
+                  <img width="512" height="488"
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/left/tile/512/1/1/0.jpg?orig=" />
+                  <img width="488" height="488"
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/left/tile/512/1/1/1.jpg?orig=" />
+              </div>
+              <div class="cube-face">
+                <img width="512" height="512"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/front/tile/512/1/0/0.jpg?orig=" />
+                <img width="488" height="512"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/front/tile/512/1/0/1.jpg?orig=" />
+                <img width="512" height="488"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/front/tile/512/1/1/0.jpg?orig=" />
+                <img width="488" height="488"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/front/tile/512/1/1/1.jpg?orig=" />
+              </div>
+              <div class="cube-face">
+                <img width="512" height="512"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/right/tile/512/1/0/0.jpg?orig=" />
+                <img width="488" height="512"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/right/tile/512/1/0/1.jpg?orig=" />
+                <img width="512" height="488"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/right/tile/512/1/1/0.jpg?orig=" />
+                <img width="488" height="488"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/right/tile/512/1/1/1.jpg?orig=" />
+              </div>
+              <div class="cube-face">
+                <img width="512" height="512"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/back/tile/512/1/0/0.jpg?orig=" />
+                <img width="488" height="512"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/back/tile/512/1/0/1.jpg?orig=" />
+                <img width="512" height="488"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/back/tile/512/1/1/0.jpg?orig=" />
+                <img width="488" height="488"
+                    src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/back/tile/512/1/1/1.jpg?orig=" />
+              </div>
+              <div class="cube-face flip-diagonal">
+                  <img
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/up/tile/512/1/1/1.jpg?orig=" />
+                  <img
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/up/tile/512/1/1/0.jpg?orig=" />
+                  <img
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/up/tile/512/1/0/1.jpg?orig=" />
+                  <img
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/up/tile/512/1/0/0.jpg?orig=" />
+              </div>
+              <div class="cube-face flip-diagonal">
+                  <img
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/down/tile/512/1/1/1.jpg?orig=" />
+                  <img
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/down/tile/512/1/1/0.jpg?orig=" />
+                  <img
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/down/tile/512/1/0/1.jpg?orig=" />
+                  <img
+                      src="https://cloudflare1.360gigapixels.com/pano/andrea-biffi/00409626_genova_01.jpg/cube/down/tile/512/1/0/0.jpg?orig=" />
+              </div>
+          </div>
+      </div>
+</body>
+<!-- dom-to-image-more and download.js scripts -->
+
+<script>
+    // create a variable that grabs the export button
+    var exportBtn = document.getElementById("exportImage");
+
+    // add a click listener to the button
+    exportBtn.addEventListener("click", exportClick);
+
+    // onload = () => {exportBtn.click()}
+
+    // this is the function which runs when the export button is clicked
+    // I could put the export functions in here, but to keep things tidy I made a new function for it and execute it from within this function.
+    function exportClick(e) {
+        // prevent default event actions
+        e.preventDefault();
+        // execute the convert2image function
+        convert2image();
+    }
+
+
+    /* The below function will throw an error of the DOM-to-Image script is not included. 
+    Read the instructions for more information. */
+    function convert2image() {
+        domtoimage
+            // make sure this ID matches the ID of the area you want to export
+            .toPng(document.getElementById("cube-view"), {
+                quality: 0.95
+            })
+            .then(function (dataUrl) {
+                // this actually makes the download "happen"
+                var link = document.createElement("a");
+                // you can name the file whatever you'd like
+                // this is the file the user sees when downloading
+                link.download = "mole.png";
+                link.href = dataUrl;
+                link.click();
+            });
+    }
+
+</script>
+
+<!-- Script to download as image -->
+<!-- <script>
+
+        const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+        const base64 = b64Data.split(',')[1];
+        const byteCharacters = atob(base64);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+            
+        const blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+        }
+       
+
+        const shotit = function(e)
+        {
+            e.preventDefault();
+            html2canvas(document.querySelector("#panorama"), {
+                logging: false,
+                width: 1920 * 2,
+                height: 1080 * 2,
+                useCORS: false
+            }).then((canvas) => {
+                document.body.appendChild(canvas);
+                var bottomCtx = canvas.getContext("2d");
+                var topCtx = canvas.getContext("2d");
+                var bData = bottomCtx.getImageData(0, 0, canvas.width, canvas.height);
+                var tData = topCtx.getImageData(0, 0, canvas.width, canvas.height);
+
+                var newImg = canvas.toDataURL("image/png");
+                console.log(newImg);
+                var blob = b64toBlob(newImg, "image/png");
+                console.log(blob);
+
+                var blobUrl = URL.createObjectURL(blob);
+
+                console.log(blobUrl);
+
+                downloadURI(blobUrl);
+            });
+
+
+            // e.preventDefault();
+            // html2canvas(document.querySelector('#firstFront'),
+            // {
+            // useCORS: true, //By passing this option in function Cross origin images will be rendered properly in the downloaded version of the PDF
+            // onrendered: function (canvas) {
+            //     document.appendChild(canvas);
+            // }
+            // });
+        };
+    </script> -->
+
+</html>

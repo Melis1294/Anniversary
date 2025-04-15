@@ -1,15 +1,21 @@
 <head>
-   <!-- for optimal display on high DPI devices -->
-   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- for optimal display on high DPI devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.css" />
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin/index.css" />
-   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin/index.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
-<!-- the viewer container must have a defined size -->
-<div id="viewer" style="width: 100vw; height: 100vh;">
-</div>
+<body>
+  <div class="square" id="changePlace">
+    <h4>START</h4>
+  </div>
+  <!-- the viewer container must have a defined size -->
+  <div id="viewer" style="width: 100vw; height: 100vh;">
+  </div>
+
+</body>
 
 <script type="importmap">
    {
@@ -18,94 +24,185 @@
            "@photo-sphere-viewer/core": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.module.js",
            "@photo-sphere-viewer/markers-plugin": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin/index.module.js",
            "@photo-sphere-viewer/cubemap-adapter": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/cubemap-adapter/index.module.js"
-       }
+        }
    }
 </script>
 
 <script type="module">
-   import { Viewer } from '@photo-sphere-viewer/core';
-   import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
-   import {  CubemapAdapter } from '@photo-sphere-viewer/cubemap-adapter';
+  import { Viewer } from '@photo-sphere-viewer/core';
+  import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+  import { CubemapAdapter } from '@photo-sphere-viewer/cubemap-adapter';
 
-   const iconsUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
-   const baseUrl = 'img/';
-   const turinUrl = baseUrl + 'turin/';
-   const moleUrl = turinUrl + 'mole';
+  const iconsUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+  const baseUrl = 'img/';
+  const turinUrl = baseUrl + 'turin/';
 
-   new Viewer({
-      container: 'viewer',
-      adapter: CubemapAdapter,
-      panorama: [
-        `${moleUrl}/left.png`,
-        `${moleUrl}/front.png`,
-        `${moleUrl}/right.png`,
-        `${moleUrl}/back.png`,
-        `${moleUrl}/up.png`,
-        `${moleUrl}/down.png`,
-      ],
-      caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-      loadingImg: baseUrl + 'turin_mole_360.png',
-      touchmoveTwoFingers: true,
-      mousewheelCtrlKey: false,
+  export const viewer = new Viewer({
+    container: 'viewer',
+    adapter: CubemapAdapter,
+    panorama: {
+      type: 'stripe',
+      path: `${turinUrl}/mole.png`,
+      // optional, set to `true` if the top and bottom faces are not correctly oriented
+      flipTopBottom: false,
+      // optional, change order of the faces on the stripe
+      order: ['left', 'front', 'right', 'back', 'top', 'bottom'],
+    },
+    // caption: 'Anniversario di<b> Kri e Kla <3</b>',
+    navbar: null,
+    loadingImg: baseUrl + 'turin_mole_360.png',
+    touchmoveTwoFingers: false,
+    mousewheelCtrlKey: false,
 
-      plugins: [
-        [MarkersPlugin, {
-            markers: [{
-                id: 'custom-tooltip',
-                tooltip: {
-                    content: document.querySelector('#tooltip-content').innerText,
-                    className: 'custom-tooltip',
-                    position: 'top',
-                    trigger: 'click',
-                },
-                position: { pitch: -0.04, yaw: -2.03 },
-                image: iconsUrl + 'pictos/pin-blue.png',
-                size: { width: 32, height: 32 },
-                anchor: 'bottom center',
-            }],
+    plugins: [
+      [MarkersPlugin, {
+        markers: [{
+          id: 'go piacenza',
+          visible: false,
+          tooltip: {
+            content: '',
+            className: 'custom-tooltip',
+            position: 'top',
+            trigger: 'click',
+          },
+          position: { pitch: -0.015, yaw: -0.45 },
+          image: 'https://cdn-icons-png.flaticon.com/128/744/744537.png',
+          size: { width: 32, height: 32 },
+          anchor: 'bottom center',
+        }, {
+          id: 'gran_madre',
+          visible: false,
+          tooltip: {
+            content: document.querySelector('#gran_madre').innerText,
+            className: 'custom-tooltip',
+            position: 'top',
+            trigger: 'click',
+          },
+          position: { pitch: -0.04, yaw: -2.03 },
+          image: iconsUrl + 'pictos/pin-blue.png',
+          size: { width: 32, height: 32 },
+          anchor: 'bottom center',
+        },
+        {
+          id: 'santa_giulia',
+          visible: true,
+          tooltip: {
+            content: document.querySelector('#santa_giulia').innerText,
+            className: 'custom-tooltip',
+            position: 'top',
+            trigger: 'click',
+          },
+          position: { pitch: -0.09, yaw: -3.20 },
+          image: iconsUrl + 'pictos/pin-red.png',
+          size: { width: 32, height: 32 },
+          anchor: 'bottom center',
         }],
+      }],
     ],
-   });
+  });
+
+
+  const changePlaceBtn = document.getElementById("changePlace");
+
+  const tooltipHtml = document.getElementById('santa_giulia').innerHTML;
+
+  const tempContainer = document.createElement('div');
+  tempContainer.innerHTML = tooltipHtml;
+
+  const nextBtn = tempContainer.querySelector('#next');
+
+    
+  window.markersPlugin  = viewer.getPlugin(MarkersPlugin);
+  window.markersIndex = 0;
+
+  nextBtn.addEventListener("click", () => next);
+
+  console.log(markersPlugin.markers);
+
+
+  markersPlugin.addEventListener('select-marker', ({ marker, visible }) => {
+    if (marker.id.includes('go')) { 
+      markersPlugin.hideMarker(marker.id);
+      changePlace();
+    }
+    console.log(`Marker ${marker.id} is ${visible ? 'visible' : 'not visible'}`);
+  });
+
+  changePlaceBtn.addEventListener("click", start);
+
+  function start() {
+    viewer.toggleFullscreen();
+  }
+
+  export function changePlace() {
+    console.log(viewer);
+
+    viewer.setPanorama({
+      type: 'stripe',
+      path: `${baseUrl}piacenza.png`,
+      flipTopBottom: false,
+    }, {
+      caption: 'The new caption',
+      position: { yaw: 0, pitch: 0 },
+      transition: {
+        rotation: false,
+        effect: 'black',
+      },
+      zoom: 70,
+    });
+  }
 </script>
 
 <!-- Video Modal Structure -->
 <div id="videoModal" class="modal">
-   <div class="modal-content">
-     <span class="close" onclick="closeModal()">&times;</span>
-     <!-- width="1280" height="720" -->
-     <iframe id="videoIframe" width="1280" height="720" src="" frameborder="0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-   </div>
- </div>
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <!-- width="1280" height="720" -->
+    <iframe id="videoIframe" width="1280" height="720" src="" frameborder="0" allow="autoplay; encrypted-media"
+      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</div>
 
- <script>
-   function openModal(src) {
-     const modal = document.getElementById('videoModal');
-     const iframe = document.getElementById('videoIframe');
-     iframe.src = `${src}?autoplay=1`; // Replace YOUR_VIDEO_ID with the actual video ID
-     modal.style.display = 'block';
-   }
- 
-   function closeModal() {
-     const modal = document.getElementById('videoModal');
-     const iframe = document.getElementById('videoIframe');
-     iframe.src = ''; // Stop the video
-     modal.style.display = 'none';
-   }
- 
-   // Close the modal when clicking outside of it
-   window.onclick = function(event) {
-     const modal = document.getElementById('videoModal');
-     if (event.target === modal) {
-       closeModal();
-     }
-   }
- </script>
+<script>
+  function openModal(src) {
+    const modal = document.getElementById('videoModal');
+    const iframe = document.getElementById('videoIframe');
+    iframe.src = `${src}?autoplay=1`; // Replace YOUR_VIDEO_ID with the actual video ID
+    modal.style.display = 'block';
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('videoModal');
+    const iframe = document.getElementById('videoIframe');
+    iframe.src = ''; // Stop the video
+    modal.style.display = 'none';
+  }
+
+  // Close the modal when clicking outside of it
+  window.onclick = function (event) {
+    const modal = document.getElementById('videoModal');
+    if (event.target === modal) {
+      closeModal();
+    }
+  }
+
+  function next() {
+    const marker = window.markersPlugin.getCurrentMarker();
+    const markers = window.markersPlugin.getMarkers();
+    console.log(markers[window.markersIndex].config.id);
+    window.markersPlugin.hideMarker(marker.id);
+    window.markersIndex = 1;
+    window.markersPlugin.showMarker(markers[window.markersIndex].config.id);
+    window.markersIndex++;
+    console.log(window.markersIndex);
+  }
+</script>
 
 <!-- Gran Madre -->
-<script type="text/template" id="tooltip-content">
+<script type="text/template" id="gran_madre">
    <div class="image-container">
       <img class="background-image" src="https://www.joyphotographers.com/wp-content/uploads/2017/02/serena-andrea-davide-3074-Copia1-1880x1240.jpg" alt="Background">
-      <img 
+      <img
          class="play-btn" src="https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_play_circle_filled_white_48px-512.png" 
          alt="Play" onclick="openModal(`https://www.youtube.com/embed/Cr3cmPq4fYk`)"
       >
@@ -116,4 +213,25 @@
        Ricordi quando la sposa era pronta per il suo grande momento e più a sinistra si poteva scorgere il grande momento? Eh sì, calzava proprio a pennello.
      </p>
    </article>
+</script>
+
+<script type="text/template" id="santa_giulia">
+  <div class="image-container">
+     <img class="background-image" src="https://www.museotorino.it/images/0a/83/b3/86/0a83b386ab504b19bdd74b083d7eab39-3.jpg" alt="Background">
+     <img 
+        class="play-btn" src="https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_play_circle_filled_white_48px-512.png" 
+        alt="Play" onclick="openModal(`https://www.youtube.com/embed/Cr3cmPq4fYk`)"
+     >
+   </div>
+  <article>
+    <h2>Quella sera speciale</h2>
+    <p>
+      Quella sera speciale quando il caldo di maggio circondava i nostri corpi e noi non sapevamo ancora che ci avrebbe riuniti, tra le moli di vetro, il canto 
+      dei giovani riuniti e i bicchieri della Santa ti confessai la mia cotta da ragazzino. Ero così emozionato nel dirtelo che mi sembrava che fosse rimasta lì, latente,
+      e mai svanita.
+    </p>
+  </article>
+  <button id="next" onclick="next()">
+    Continua
+  </button>
 </script>
